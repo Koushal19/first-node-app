@@ -14,10 +14,30 @@
             <button type="submit">Shorten</button>
         </form> 
     </div>
-    <div>
-        <% if(shortid){ %>            
-            <p><a href="/url/<%= shortid %>"><%= shortid %></a></p> 
-        <% } %>
-    </div>
+
+    <% if (locals.urls && locals.urls.length > 0) { %>
+        <div>
+            <br><br>
+            <table border="1">
+                <tr>
+                    <th>Short URL</th>
+                    <th>Long URL</th>
+                    <th>Analytics</th>
+                </tr>
+               
+                <% locals.urls.forEach((url) => { %>
+                    <tr>
+                        <td><a href="/url/<%= url.ShortID %>"><%= url.ShortID %></a></td>
+                        <td><%= url.redirectURL %></td>
+                        <td><a href="/url/analytics/<%= url.ShortID %>">Analytics</a></td>
+                    </tr>   
+                <% }) %>
+    
+            </table>
+        </div>
+    <% } else { %>
+        <p>No URLs found.</p>
+    <% } %>
+
 </body>
 </html>

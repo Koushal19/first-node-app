@@ -1,12 +1,24 @@
 const router = require('express').Router();
-const URL = require("../models/url");
+const url = require("../models/url");
 
+
+
+router.get('/signup', async (req, res) => {
+    res.render("signup");
+});
+
+router.get('/signin', async (req, res) => {
+    res.render("signin");
+});
 
 router.get('/', async (req, res) => {
-    const urls = await URL.find({});
+    const urls = await url.find({});
     res.render("home",{
         urls : urls,
     });
 });
+
+
+
 
 module.exports = router;
