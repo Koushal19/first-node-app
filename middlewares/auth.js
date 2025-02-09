@@ -1,21 +1,43 @@
 const {getUserFromSessionId} = require("../service/auth");
 
-async function restrictTologgedInUserOnly(req, res, next) {
-    const userUID = req.cookies.uid; 
 
-    if (!userUID) {
-        return res.redirect("/signin");
-    }  
-    
-    const user = getUserFromSessionId(userUID);
 
-    if (!user) {
-        return res.redirect("/signin");
+
+
+function checkForAuth(req,res,next){
+    const tokenCookie = req.cookies.uid;
+    req.user = null;
+    if(!tokenCookie || !tokenCookie.length) return next();    
+
+
+
+    const user = getUserFromSessionId(tokenCookie);
+
+    if(!user){
+        return next();
     }
-
     req.user = user;
     next();
+    
+}
 
-} 
+function restrictToRole(roles=[]) {
+    return (req, res, next) => {        
+        if (!req.user){
+            return res.status(401).redirect("/signin");
+        }
 
-module.exports = {restrictTologgedInUserOnly};
+        if(!roles.includes(req.user.role)){
+            return res.status(401).end("Unauthorized");
+        }
+
+        return next();
+    };
+
+}
+
+
+
+module.exports = {checkForAuth,
+    restrictToRole,
+};
